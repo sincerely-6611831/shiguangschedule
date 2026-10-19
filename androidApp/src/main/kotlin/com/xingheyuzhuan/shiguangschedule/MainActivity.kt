@@ -9,8 +9,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.xingheyuzhuan.shiguangschedule.tool.ExternalFileManager
+import com.xingheyuzhuan.shiguangschedule.widget.keepalive.WidgetKeepAliveService
 
 class MainActivity : AppCompatActivity() {
+
+    override fun onStart() {
+        super.onStart()
+        WidgetKeepAliveService.startIfEnabled(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

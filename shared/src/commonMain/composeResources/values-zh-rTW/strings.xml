@@ -1,4 +1,5 @@
 <resources>
+    <string name="item_widget_keepalive">小工具解鎖重新整理與保活</string>
     <!-- 應用基礎資訊 -->
     <string name="app_name">拾光課程表</string>
     

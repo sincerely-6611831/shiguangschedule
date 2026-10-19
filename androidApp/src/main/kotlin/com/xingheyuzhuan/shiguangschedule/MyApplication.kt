@@ -1,8 +1,12 @@
 package com.xingheyuzhuan.shiguangschedule
 
 import android.app.Application
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import androidx.work.Configuration
 import com.xingheyuzhuan.shiguangschedule.data.di.SharedModule
+import com.xingheyuzhuan.shiguangschedule.widget.WidgetUnlockReceiver
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -33,5 +37,13 @@ class MyApplication : Application(), Configuration.Provider {
             androidContext(this@MyApplication)
             workManagerFactory()
         }
+
+        // USER_PRESENT 只能动态注册；使用 Application 上下文，在应用退到后台后继续监听。
+        ContextCompat.registerReceiver(
+            this,
+            WidgetUnlockReceiver(),
+            IntentFilter(Intent.ACTION_USER_PRESENT),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 }

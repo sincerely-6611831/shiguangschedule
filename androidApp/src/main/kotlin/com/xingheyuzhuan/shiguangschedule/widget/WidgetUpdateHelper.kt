@@ -18,6 +18,7 @@ import com.xingheyuzhuan.shiguangschedule.widget.list_vertical.ListVerticalNativ
 import com.xingheyuzhuan.shiguangschedule.widget.tiny.TinyNativeProvider
 import com.xingheyuzhuan.shiguangschedule.widget.tiny.TinyNativeRenderer
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -32,6 +33,20 @@ import kotlin.time.Duration.Companion.seconds
 
 // 1. 定义在顶层，避免 "local type aliases" 实验性特性报错
 private typealias RenderFunc = (Context, WidgetSnapshot, Int) -> RemoteViews
+
+private val nativeWidgetConfigs: List<Pair<Class<*>, RenderFunc>> = listOf(
+    TinyNativeProvider::class.java to { ctx, snap, id -> TinyNativeRenderer.render(ctx, snap, id) },
+    CompactNativeProvider::class.java to { ctx, snap, id -> CompactNativeRenderer.render(ctx, snap, id) },
+    DoubleDaysNativeProvider::class.java to { ctx, snap, id -> DoubleDaysNativeRenderer.render(ctx, snap, id) },
+    ListVerticalNativeProvider::class.java to { ctx, snap, id -> ListVerticalNativeRenderer.render(ctx, snap, id) }
+)
+
+internal fun hasActiveWidgets(context: Context): Boolean {
+    val manager = AppWidgetManager.getInstance(context)
+    return nativeWidgetConfigs.any { (providerClass, _) ->
+        manager.getAppWidgetIds(ComponentName(context, providerClass)).isNotEmpty()
+    }
+}
 
 // 创建一个局部的注入代理中心，用于在全局顶层方法中安全提取注入实例
 private object WidgetDependencyContainer : KoinComponent {
@@ -55,7 +70,7 @@ object WidgetUpdateDebouncer {
         updateJob?.cancel() // 取消未完成的排队任务
         updateJob = scope.launch {
             delay(delayMillis.milliseconds)
-            realUpdateAllWidgets(context)
+            renderAllWidgets(context)
         }
     }
 }
@@ -69,9 +84,9 @@ suspend fun updateAllWidgets(context: Context) {
 }
 
 /**
- * 实际执行全量更新的私有核心方法
+ * 实际执行全量更新；Worker 直接调用以等待渲染完成，交互更新仍通过防抖入口。
  */
-private suspend fun realUpdateAllWidgets(context: Context) {
+internal suspend fun renderAllWidgets(context: Context) {
     try {
         // 1. 从 Koin 容器中动态获取单例化的仓库
         val repository = WidgetDependencyContainer.repository
@@ -139,18 +154,11 @@ private suspend fun realUpdateAllWidgets(context: Context) {
             first_day_of_week = firstDayOfWeek
         )
 
-        // 4. 定义所有原生尺寸的映射列表
+        // 4. 获取系统小组件管理器
         val appWidgetManager = AppWidgetManager.getInstance(context)
 
-        val nativeConfigs: List<Pair<Class<*>, RenderFunc>> = listOf(
-            TinyNativeProvider::class.java to { ctx, snap, id -> TinyNativeRenderer.render(ctx, snap, id) },
-            CompactNativeProvider::class.java to { ctx, snap, id -> CompactNativeRenderer.render(ctx, snap, id) },
-            DoubleDaysNativeProvider::class.java to { ctx, snap, id -> DoubleDaysNativeRenderer.render(ctx, snap, id) },
-            ListVerticalNativeProvider::class.java to { ctx, snap, id -> ListVerticalNativeRenderer.render(ctx, snap, id) }
-        )
-
         // 5. 统一分发更新
-        nativeConfigs.forEachIndexed { index, (providerClass, renderFunc) ->
+        nativeWidgetConfigs.forEachIndexed { index, (providerClass, renderFunc) ->
             val componentName = ComponentName(context, providerClass)
             val ids = appWidgetManager.getAppWidgetIds(componentName)
 
@@ -167,12 +175,16 @@ private suspend fun realUpdateAllWidgets(context: Context) {
                     }
 
                     Log.d("WidgetUpdateHelper", "成功刷新规格 ${providerClass.simpleName}")
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Log.e("WidgetUpdateHelper", "规格 ${providerClass.simpleName} 渲染失败", e)
                 }
             }
         }
 
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Log.e("WidgetUpdateHelper", "更新流程异常: ${e.stackTraceToString()}")
     }

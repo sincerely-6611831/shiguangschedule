@@ -1,4 +1,5 @@
 <resources>
+    <string name="item_widget_keepalive">Widget unlock refresh and background activity</string>
     <!-- Basic App Information -->
     <string name="app_name">Shiguang Schedule</string>
 

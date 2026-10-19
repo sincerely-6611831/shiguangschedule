@@ -6,6 +6,8 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
+    <!-- 保活授权与原系统策略属于当前设备，不能随备份迁移。 -->
+    <exclude domain="sharedpref" path="widget_keepalive.xml" />
     <!--
    <include domain="sharedpref" path="."/>
    <exclude domain="sharedpref" path="device.xml"/>
