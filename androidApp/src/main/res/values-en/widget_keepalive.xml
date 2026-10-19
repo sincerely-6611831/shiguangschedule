@@ -1,0 +1,34 @@
+<resources>
+    <string name="widget_keepalive_title">Widget unlock refresh and background activity</string>
+    <string name="widget_keepalive_back">Back</string>
+    <string name="widget_keepalive_channel">Widget unlock listener</string>
+    <string name="widget_keepalive_notification">Refresh timetable widgets after unlocking</string>
+    <string name="widget_keepalive_stop">Stop background service</string>
+    <string name="widget_keepalive_foreground">Enable foreground service</string>
+    <string name="widget_service_running">Foreground service: running</string>
+    <string name="widget_service_stopped">Foreground service: stopped</string>
+    <string name="widget_overlay_running">Transparent overlay: running</string>
+    <string name="widget_overlay_stopped">Transparent overlay: stopped</string>
+    <string name="widget_keepalive_description">Keep a persistent notification to maintain the unlock listener and request updates for all widgets. When disabled, unlock events can still be received while the app process is alive.</string>
+    <string name="widget_keepalive_overlay">Transparent overlay</string>
+    <string name="widget_keepalive_overlay_description">Optional: after enabling the foreground service, enable a transparent overlay to improve background reliability. Requires overlay permission and may show a system overlay notification. Return here and enable it after granting permission.</string>
+    <string name="widget_keepalive_limits">Allow auto-start and background activity in system settings. Reliability depends on the device; immediate updates after every unlock cannot be guaranteed. Reopen the app after a force stop. Non-root Shizuku usually needs restarting after a device reboot.</string>
+    <string name="widget_notification_denied">Allow notifications before enabling the foreground service.</string>
+    <string name="widget_battery_exempt">Battery optimization: exempt</string>
+    <string name="widget_battery_restricted">Battery optimization: not exempt</string>
+    <string name="widget_battery_settings">Battery optimization settings</string>
+    <string name="widget_autostart_settings">System auto-start and background settings</string>
+    <string name="widget_shizuku_unavailable">Shizuku: disconnected; install and start it first</string>
+    <string name="widget_shizuku_authorized">Shizuku: authorized</string>
+    <string name="widget_shizuku_unauthorized">Shizuku: connected, not authorized</string>
+    <string name="widget_shizuku_description">After authorization, exempt this app from device idle restrictions and allow background activity. Only this app is affected. The original policy is saved and can be restored.</string>
+    <string name="widget_shizuku_authorize">Install Shizuku / request authorization</string>
+    <string name="widget_shizuku_apply">Allow background activity with Shizuku</string>
+    <string name="widget_shizuku_restore">Restore original background policy</string>
+    <string name="widget_shizuku_denied">Shizuku authorization denied. The policy was not changed.</string>
+    <string name="widget_shizuku_disconnected">Shizuku disconnected. Start it and try again.</string>
+    <string name="widget_shizuku_timeout">Shizuku connection timed out. Check that it is running.</string>
+    <string name="widget_shizuku_applied">Background policy applied and verified. Also enable the foreground service.</string>
+    <string name="widget_shizuku_restored">The saved background policy has been restored.</string>
+    <string name="widget_shizuku_failed">Operation failed: %1$s. If partly applied, authorize again and restore the original policy.</string>
+</resources>

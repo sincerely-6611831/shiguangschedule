@@ -1,0 +1,34 @@
+<resources>
+    <string name="widget_keepalive_title">小工具解鎖重新整理與保活</string>
+    <string name="widget_keepalive_back">返回</string>
+    <string name="widget_keepalive_channel">小工具解鎖監聽</string>
+    <string name="widget_keepalive_notification">解鎖後自動重新整理桌面課表</string>
+    <string name="widget_keepalive_stop">停止保活</string>
+    <string name="widget_keepalive_foreground">開啟前景保活服務</string>
+    <string name="widget_service_running">前景服務：執行中</string>
+    <string name="widget_service_stopped">前景服務：未執行</string>
+    <string name="widget_overlay_running">透明懸浮視窗：執行中</string>
+    <string name="widget_overlay_stopped">透明懸浮視窗：未執行</string>
+    <string name="widget_keepalive_description">開啟後透過常駐通知維持解鎖監聽，解鎖時要求重新整理全部小工具。關閉後，應用程式處理程序存活時仍可監聽解鎖。</string>
+    <string name="widget_keepalive_overlay">透明懸浮視窗保活</string>
+    <string name="widget_keepalive_overlay_description">可選：開啟前景服務後，可開啟透明懸浮視窗以提高背景存活機率。需要懸浮視窗權限，系統可能顯示在其他應用程式上層顯示的提示。授權後請返回並再次開啟。</string>
+    <string name="widget_keepalive_limits">請在手機系統允許自動啟動與背景執行。保活效果取決於系統，無法保證每次解鎖立即重新整理。強制停止後需重新開啟應用程式。非 root 模式的 Shizuku 通常需於手機重新啟動後再次啟動。</string>
+    <string name="widget_notification_denied">請允許通知權限後再開啟前景保活。</string>
+    <string name="widget_battery_exempt">電池最佳化：已豁免</string>
+    <string name="widget_battery_restricted">電池最佳化：未豁免</string>
+    <string name="widget_battery_settings">設定電池最佳化豁免</string>
+    <string name="widget_autostart_settings">開啟系統自動啟動與背景設定</string>
+    <string name="widget_shizuku_unavailable">Shizuku：未連線，請先安裝並啟動</string>
+    <string name="widget_shizuku_authorized">Shizuku：已授權</string>
+    <string name="widget_shizuku_unauthorized">Shizuku：已連線，未授權</string>
+    <string name="widget_shizuku_description">授權後可將本應用程式加入裝置閒置白名單，並允許背景執行。僅修改本應用程式的背景策略，套用前儲存原設定，可恢復。</string>
+    <string name="widget_shizuku_authorize">安裝 Shizuku / 要求授權</string>
+    <string name="widget_shizuku_apply">透過 Shizuku 允許背景執行</string>
+    <string name="widget_shizuku_restore">恢復原來的背景策略</string>
+    <string name="widget_shizuku_denied">未獲得 Shizuku 授權，背景策略未修改。</string>
+    <string name="widget_shizuku_disconnected">Shizuku 服務已中斷，請啟動後重試。</string>
+    <string name="widget_shizuku_timeout">連線 Shizuku 逾時，請檢查是否正在執行。</string>
+    <string name="widget_shizuku_applied">背景策略已套用並核對。請同時開啟前景保活。</string>
+    <string name="widget_shizuku_restored">已恢復套用前儲存的背景策略。</string>
+    <string name="widget_shizuku_failed">操作失敗：%1$s。若已有部分修改，可重新授權後恢復原策略。</string>
+</resources>

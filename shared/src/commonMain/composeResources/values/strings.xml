@@ -1,4 +1,5 @@
 <resources>
+    <string name="item_widget_keepalive">小组件解锁刷新与保活</string>
     <!-- 应用基础信息 -->
     <string name="app_name">拾光课程表</string>
 

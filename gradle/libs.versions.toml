@@ -43,9 +43,12 @@ koin-plugin = "1.1.0"
 coil = "3.5.0"
 aboutLibraries = "15.0.4"
 kgit = "1.0.3"
+shizuku = "13.1.5"
 
 
 [libraries]
+shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
+shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 # Compose Multiplatform 跨平台核心 UI 库
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }

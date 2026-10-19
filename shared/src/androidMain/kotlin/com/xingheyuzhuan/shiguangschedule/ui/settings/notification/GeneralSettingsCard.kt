@@ -1,6 +1,7 @@
 package com.xingheyuzhuan.shiguangschedule.ui.settings.notification
 
 import android.os.Build
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import shiguangschedule.shared.generated.resources.item_course_reminder
 import shiguangschedule.shared.generated.resources.item_dnd_permission
 import shiguangschedule.shared.generated.resources.item_exact_alarm_permission
 import shiguangschedule.shared.generated.resources.item_ignore_battery_optimization
+import shiguangschedule.shared.generated.resources.item_widget_keepalive
 import shiguangschedule.shared.generated.resources.item_remind_time_before
 import shiguangschedule.shared.generated.resources.remind_time_minutes_format
 import shiguangschedule.shared.generated.resources.section_title_general
@@ -212,6 +214,15 @@ fun GeneralSettingsCard(
                 SettingItemRow(
                     title = stringResource(Res.string.item_ignore_battery_optimization),
                     onClick = onBatteryOptimizationClick
+                )
+
+                HorizontalDivider()
+                SettingItemRow(
+                    title = stringResource(Res.string.item_widget_keepalive),
+                    onClick = {
+                        context.startActivity(Intent().setClassName(context.packageName,
+                            "com.xingheyuzhuan.shiguangschedule.widget.keepalive.WidgetKeepAliveActivity"))
+                    }
                 )
             }
         }

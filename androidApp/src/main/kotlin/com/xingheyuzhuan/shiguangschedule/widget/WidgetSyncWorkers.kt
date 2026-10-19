@@ -8,7 +8,7 @@ import com.xingheyuzhuan.shiguangschedule.data.sync.WidgetDataSynchronizer
 import org.koin.android.annotation.KoinWorker
 
 /**
- * 负责每15分钟更新一次小组件UI的Worker。
+ * 负责解锁后及每15分钟更新一次小组件UI的Worker。
  * 它直接调用所有小组件的UI更新，确保UI及时刷新。
  */
 @KoinWorker
@@ -18,7 +18,8 @@ class WidgetUiUpdateWorker(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         Log.d("WidgetSync", "WidgetUiUpdateWorker 开始执行")
-        updateAllWidgets(applicationContext)
+        // 等待实际渲染完成，不能只提交防抖任务就提前结束 Worker。
+        renderAllWidgets(applicationContext)
         return Result.success()
     }
 }
