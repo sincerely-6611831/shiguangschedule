@@ -1,0 +1,95 @@
+name: Build Android Debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/android-debug-apk.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build-android-apk:
+    name: Compile and publish Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 37
+        run: sdkmanager --install "platforms;android-37"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Fetch latest school adaptation resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          temp_dir="$(mktemp -d)"
+          trap 'rm -rf "$temp_dir"' EXIT
+          warehouse="https://github.com/ShiGuangSchedule/shiguang_warehouse.git"
+
+          git clone --depth 1 --branch index-pb-release "$warehouse" "$temp_dir/index"
+          test -s "$temp_dir/index/school_index.pb"
+          mkdir -p shared/assets/offline_repo/index
+          cp "$temp_dir/index/school_index.pb" shared/assets/offline_repo/index/school_index.pb
+
+          git clone --depth 1 --filter=blob:none --sparse --branch main "$warehouse" "$temp_dir/warehouse"
+          git -C "$temp_dir/warehouse" sparse-checkout set resources
+          test -d "$temp_dir/warehouse/resources"
+          rm -rf shared/assets/offline_repo/schools/resources
+          mkdir -p shared/assets/offline_repo/schools
+          cp -a "$temp_dir/warehouse/resources" shared/assets/offline_repo/schools/
+          find shared/assets/offline_repo/schools/resources -name adapters.yaml -delete
+
+      - name: Generate contributor resources
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq webp
+          bash .github/scripts/build_contributors.sh
+          test -s shared/src/commonMain/composeResources/files/contributors_data/contributors.json
+
+      - name: Compile Android Debug APKs
+        shell: bash
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :androidApp:assembleDebug --no-configuration-cache --no-parallel --max-workers=2 --stacktrace
+          ls -lh androidApp/build/outputs/apk/debug/*.apk
+
+      - name: Upload APK build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: shiguangschedule-android-debug-${{ github.run_number }}
+          path: androidApp/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish APKs to GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_NUMBER: ${{ github.run_number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "android-debug-${RUN_NUMBER}" \
+            androidApp/build/outputs/apk/debug/*.apk \
+            --title "Android Debug APK #${RUN_NUMBER}" \
+            --notes "Automatically built from commit ${GITHUB_SHA}. Debug-signed APKs for testing only; not an official signed release." \
+            --prerelease \
+            --target "${GITHUB_SHA}"
