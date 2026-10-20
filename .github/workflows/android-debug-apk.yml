@@ -27,11 +27,13 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Android SDK 37
-        run: sdkmanager --install "platforms;android-37"
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager_path="$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | sort -V | tail -n 1)"
+          test -n "$sdkmanager_path"
+          "$sdkmanager_path" --install "platforms;android-37"
 
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
